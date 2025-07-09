@@ -1,6 +1,6 @@
 # REDDAO – Plataforma DAO para Centros Deportivos
 
-README técnico–funcional con **TODOS** los diagramas clave (UML, BPMN, ER, etc.) para comprender y construir la solución.
+README técnico-funcional con **TODOS** los diagramas clave (UML, BPMN, ER, etc.) para comprender y construir la solución.
 
 ---
 
@@ -11,10 +11,11 @@ README técnico–funcional con **TODOS** los diagramas clave (UML, BPMN, ER, et
 3. [Requisitos del Sistema](#reqs)
 4. [Arquitectura General](#arq)
 5. [Diagramas UML](#uml)
-   5.1. [Caso de Uso](#uc)
-   5.2. [Secuencia](#seq)
-   5.3. [Estados](#states)
-   5.4. [Clases](#class)
+
+   1. [Caso de Uso](#uc)
+   2. [Secuencia](#seq)
+   3. [Estados](#states)
+   4. [Clases](#class)
 6. [Diagrama de Flujo](#flow)
 7. [Diagrama BPMN](#bpmn)
 8. [Modelo de Datos (ER)](#er)
@@ -22,13 +23,13 @@ README técnico–funcional con **TODOS** los diagramas clave (UML, BPMN, ER, et
 
 ---
 
-## 1 Introducción <a name="intro"></a>
+## 1. Introducción <a name="intro"></a>
 
-REDDAO transforma la operación de centros deportivos mediante una **Organización Autónoma Descentralizada** soportada por *blockchain* (Hyperledger Fabric), **IoT** y un modelo de gobernanza tokenizado.
+**REDDAO** transforma la operación de centros deportivos mediante una Organización Autónoma Descentralizada soportada por *blockchain* (Hyperledger Fabric), IoT y un modelo de gobernanza tokenizado.
 
 ---
 
-## 2 Resumen de Valor <a name="valor"></a>
+## 2. Resumen de Valor <a name="valor"></a>
 
 * Transparencia total 🔍
 * Gobernanza comunitaria 🗳️
@@ -38,105 +39,114 @@ REDDAO transforma la operación de centros deportivos mediante una **Organizaci�
 
 ---
 
-## 3 Requisitos del Sistema <a name="reqs"></a>
+## 3. Requisitos del Sistema <a name="reqs"></a>
 
 | Tipo               | Descripción                                                                                                                          |
 | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
-| **Funcionales**    | Reservas on‑chain, votaciones ponderadas, incentivos, acceso QR/NFT, marketplace, onboarding centros/inversores, compras colectivas. |
-| **No Funcionales** | Transparencia, seguridad cripto, escalabilidad (≥5k tx/min), UX móvil/web, cumplimiento GDPR, auditoría continua.                    |
+| **Funcionales**    | Reservas on-chain, votaciones ponderadas, incentivos, acceso QR/NFT, marketplace, onboarding centros/inversores, compras colectivas. |
+| **No Funcionales** | Transparencia, seguridad cripto, escalabilidad (≥5 000 tx/min), UX móvil/web, cumplimiento GDPR, auditoría continua.                 |
 
 ---
 
-## 4 Arquitectura General <a name="arq"></a>
+## 4. Arquitectura General <a name="arq"></a>
 
 ```mermaid
 graph TD
     subgraph RedDAO_Blockchain
         direction LR
-        SC((Smart Contracts))
-        ORD[Ordering Service]
-        SC --> ORD
+        SC((Smart Contracts)) --> ORD[Ordering Service]
     end
+
     subgraph Nodos_Validadores
-        C1[Centro 1] --- SC
-        C2[Centro 2] --- SC
-        Cn[…Centro n] --- SC
+        C1[Centro 1] --- SC
+        C2[Centro 2] --- SC
+        Cn[…Centro n…] --- SC
     end
-    IGW[Gateway IoT] --> SC
-    API[API REST/GraphQL] --> SC
-    App[App Web/Móvil] --> API
+
+    IGW[Gateway IoT] --> SC
+    API[API REST / GraphQL] --> SC
+    App[App Web / Móvil] --> API
     Wallet((Wallet)) --> SC
 ```
 
 ---
 
-## 5 Diagramas UML <a name="uml"></a>
+## 5. Diagramas UML <a name="uml"></a>
 
-### 5.1 Caso de Uso <a name="uc"></a>
+### 5.1. Caso de Uso <a name="uc"></a>
 
 ```mermaid
-graph TD
-    actor Usuario
-    actor Centro
-    actor Empleado
-    actor Inversor
-    actor Proveedor
-    actor Admin as "REDDAO Business"
+flowchart TD
+    subgraph Actores
+        U((Usuario))
+        CT((Centro))
+        E((Empleado))
+        I((Inversor))
+        P((Proveedor))
+        A((REDDAO Business))
+    end
 
-    Usuario -- Reserva --> UC1(("Reservar actividad"))
-    Usuario -- Pago --> UC2(("Pagar con tokens"))
-    Usuario -- Votar --> UC3(("Participar en votación"))
+    subgraph "Casos de Uso"
+        UC1([Reservar actividad])
+        UC2([Pagar con tokens])
+        UC3([Participar en votación])
+        UC4([Publicar calendario])
+        UC5([Confirmar asistencia])
+        UC6([Proponer inversión])
+        UC7([Recibir propinas])
+        UC8([Aportar capital])
+        UC9([Cobrar retorno])
+        UC10([Oferta colectiva])
+        UC11([Gestionar contratos])
+    end
 
-    Centro -- Gestiona --> UC4(("Publicar calendario"))
-    Centro -- Valida --> UC5(("Confirmar asistencia"))
-    Centro -- Propuesta --> UC6(("Proponer inversión"))
-
-    Empleado -- Recibe --> UC7(("Recibir propinas"))
-
-    Inversor -- Financia --> UC8(("Aportar capital"))
-    Inversor -- ROI --> UC9(("Cobrar retorno"))
-
-    Proveedor -- Oferta --> UC10(("Oferta colectiva"))
-
-    Admin -- Despliega --> UC11(("Gestionar contratos"))
+    %% Relaciones
+    U --> UC1
+    U --> UC2
+    U --> UC3
+    CT --> UC4
+    CT --> UC5
+    CT --> UC6
+    E --> UC7
+    I --> UC8
+    I --> UC9
+    P --> UC10
+    A --> UC11
 ```
 
-### 5.2 Secuencia – *Reserva de Clase* <a name="seq"></a>
+### 5.2. Secuencia – *Reserva de Clase* <a name="seq"></a>
 
 ```mermaid
 sequenceDiagram
     autonumber
     participant U as Usuario
-    participant App
-    participant API
-    participant SC as SmartContract_Reservas
-    participant Centro
+    participant APP as App
+    participant API as API
+    participant SC as SC_Reservas
+    participant C as Centro
 
-    U ->> App: Solicitar reserva
-    App ->> API: POST /reservas
-    API ->> SC: invoke reserve()
-    SC -->> API: OK (txID)
-    API -->> App: confirmación + QR dinámico
-    U ->> Centro: Escanea QR ingreso
-    Centro ->> SC: validateAttendance(txID)
-    SC -->> Centro: acceso OK
-    SC ->> Centro: 65% tokens
-    SC ->> DAO: 25%
-    SC ->> TesoreriaRed: 10%
+    U ->> APP: Solicitar reserva
+    APP ->> API: POST /reservas
+    API ->> SC: reserve()
+    SC -->> API: txId
+    API -->> APP: Confirmación + QR
+    U ->> C: Escanea QR ingreso
+    C ->> SC: validateAttendance(txId)
+    SC -->> C: Acceso OK & liquidación
 ```
 
-### 5.3 Diagrama de Estados – *NFT de Membresía* <a name="states"></a>
+### 5.3. Diagrama de Estados – *NFT de Membresía* <a name="states"></a>
 
 ```mermaid
 stateDiagram-v2
     [*] --> Inactivo
     Inactivo --> Activo: Pago cuota
-    Activo --> Suspendido: Deuda / Penalización
-    Suspendido --> Activo: Liquidar deuda
-    Activo --> Quemado: Baja definitiva / Token burnt
+    Activo --> Suspendido: Deuda/Penalización
+    Suspendido --> Activo: Regularizar
+    Activo --> Quemado: Baja definitiva
 ```
 
-### 5.4 Diagrama de Clases (Dominio) <a name="class"></a>
+### 5.4. Diagrama de Clases (Dominio) <a name="class"></a>
 
 ```mermaid
 classDiagram
@@ -158,48 +168,46 @@ classDiagram
         +uint costeTokens
         +EstadoReserva estado
     }
-    class Token {
-        <<interface>>
+    class TokenUtilidad {
         +transfer()
     }
-    class TokenUtilidad
-    class TokenGobernanza
-    Usuario "*" --> "*" Reserva
-    Centro "1" --> "*" Reserva
-    TokenUtilidad ..|> Token
-    TokenGobernanza ..|> Token
+    class TokenGobernanza {
+        +transfer()
+    }
+    Usuario "1" -- "*" Reserva : realiza
+    Centro "1" -- "*" Reserva : oferta
 ```
 
 ---
 
-## 6 Diagrama de Flujo – Distribución de Pagos <a name="flow"></a>
+## 6. Diagrama de Flujo – Distribución de Pagos <a name="flow"></a>
 
 ```mermaid
 flowchart LR
-    P[Pago Usuario] --> SC[SmartContract]
-    SC -->|65%| Centro
-    SC -->|25%| DAO_Tesoreria
-    SC -->|10%| Fondo_Red
+    P[Pago del Usuario] --> SC[Smart Contract]
+    SC -->|65 %| Centro
+    SC -->|25 %| DAO_Tesoreria
+    SC -->|10 %| Fondo_Red
 ```
 
 ---
 
-## 7 Diagrama BPMN – *Compra Colectiva a Proveedor* <a name="bpmn"></a>
+## 7. Diagrama BPMN – Compra Colectiva a Proveedor <a name="bpmn"></a>
 
 ```mermaid
 flowchart TD
-    start([Inicio]) --> A[Proveedor publica oferta<br/>volumen mínimo]
-    A --> B{Centros suman<br/>volumen?}
+    Start([Inicio]) --> A[Proveedor publica oferta<br/>volumen mínimo]
+    A --> B{¿Centros alcanzan<br/>volumen?}
     B -- No --> C[Esperar más centros]
     C --> B
-    B -- Sí --> D[Smart Contract ejecuta compra]
-    D --> E[Distribuye productos]
-    E --> end([Fin])
+    B -- Sí --> D[Smart Contract ejecuta compra]
+    D --> E[Distribuir productos]
+    E --> Finish([Fin])
 ```
 
 ---
 
-## 8 Modelo Entidad‑Relación <a name="er"></a>
+## 8. Modelo Entidad-Relación <a name="er"></a>
 
 ```mermaid
 erDiagram
@@ -223,14 +231,14 @@ erDiagram
         string usuarioId FK
         string estado
     }
-    USUARIO ||--o{ RESERVA : "hace"
-    CENTRO  ||--o{ RESERVA : "ofrece"
-    USUARIO ||--|| NFT_MEMBRESIA : "posee"
+    USUARIO ||--o{ RESERVA : realiza
+    CENTRO  ||--o{ RESERVA : oferta
+    USUARIO ||--|| NFT_MEMBRESIA : posee
 ```
 
 ---
 
-## 9 Glosario <a name="gloss"></a>
+## 9. Glosario <a name="gloss"></a>
 
 | Término                 | Definición                                                         |
 | ----------------------- | ------------------------------------------------------------------ |
